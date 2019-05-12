@@ -1,0 +1,6 @@
+For testing the code, please use the command
+
+python -m unittest discover -s tests
+
+More about tests can be found at https://realpython.com/python-testing/
+
