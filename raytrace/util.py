@@ -6,6 +6,39 @@ import math
 # tol error
 EPSILON = 0.00001
 
+class matrix:
+    def __init__(self,matrix_list):
+        self.m = len(matrix_list)
+        self.n = len(matrix_list[0])
+        
+        for line in matrix_list:
+            if len(line) != self.n:
+                raise TypeError
+        
+        self.matrix_list = matrix_list
+    def inner_range(self,m,n):
+        if (n>=self.n) or (m>=self.m):
+            raise IndexError
+
+    def __getitem__(self,pos):
+        m,n = pos
+        self.inner_range(*pos)
+        return self.matrix_list[m][n] 
+
+    def __setitem__(self,pos,data):
+        m,n = pos
+        self.inner_range(*pos)
+        self.matrix_list[m][n] = data 
+
+    def __eq__(self, other):
+        if not isinstance(other, matrix):
+            return False
+        if (self.m != other.m) or (self.n != other.n):
+            return False
+        list_of_true = [abs(self[m,n] - other[m,n]) < EPSILON for n in range(self.n) for m in range(self.m)]
+        return all(list_of_true)
+
+
 
 class rtTuple():
     '''
