@@ -6,6 +6,7 @@ from copy import deepcopy
 
 # tol error
 EPSILON = 0.00001
+TUPLE_SIZE = 4
 
 class matrix:
     def __init__(self,matrix_list):
@@ -38,6 +39,33 @@ class matrix:
             return False
         list_of_true = [abs(self[m,n] - other[m,n]) < EPSILON for n in range(self.n) for m in range(self.m)]
         return all(list_of_true)
+    
+    def __mul__(self, other):
+        if isinstance(other, int) or isinstance(other, float):
+            new_matrix_list = [[other * element for element in line] for line
+             in self.matrix_list]
+            
+            return matrix(new_matrix_list)
+        elif isinstance(other, matrix):
+            if other.n != self.m:
+                raise ValueError('Matrix columns should match other lines')
+            new_matrix_list = [
+                [sum([self[i,k] * other[k,j] for k in range(self.n)]) for j in 
+                range(other.n)] for i in range(self.m)
+            ]
+            return matrix(new_matrix_list)
+        elif isinstance(other, rtTuple):
+            if self.n != TUPLE_SIZE or self.m != TUPLE_SIZE:
+                raise ValueError('matrix should have the rtTuple size')
+            
+            tuple_values = [other * rtTuple(*line) for line in self.matrix_list]
+
+            return rtTuple(*tuple_values)
+        else:
+            raise NotImplementedError
+
+    __rmul__ = __mul__
+
 
 
 
@@ -80,7 +108,12 @@ class rtTuple():
         return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
 
     def __mul__(self, other):
-        return rtTuple(other * self.x, other * self.y, other * self.z, self.w)
+        if isinstance(other, float) or isinstance(other, int):
+            return rtTuple(other * self.x, other * self.y, other * self.z, self.w)
+        elif isinstance(other, rtTuple):
+            return other.x * self.x + other.y * self.y + other.z * self.z
+        else:
+            raise NotImplementedError
 
     __rmul__ = __mul__
 
