@@ -39,6 +39,15 @@ class testMatrix(unittest.TestCase):
         
         self.assertEqual(M1,M2,'The both matrices should be equal')
         M2[0,3] = 77
-        self.assertTrue(M2[0,3]==77, 'These matrices should be different')
+        self.assertFalse(M1[0,3]==77, 'The component (0,7) should not be 77')
+        self.assertFalse(M1 == M2, 'These matrices should be different')
+
+    def test_matrix_multiplication(self):
+        '''
+        TODO: 
+            - scalar multiplication
+            - matrix multiplication
+            - tuple multiplication
+        '''
 
 

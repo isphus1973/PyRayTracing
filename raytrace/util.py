@@ -2,6 +2,7 @@
 This is a python util library for Ray Tracing written by Arthur Scardua
 '''
 import math
+from copy import deepcopy
 
 # tol error
 EPSILON = 0.00001
@@ -15,7 +16,7 @@ class matrix:
             if len(line) != self.n:
                 raise TypeError
         
-        self.matrix_list = matrix_list
+        self.matrix_list = deepcopy(matrix_list)
     def inner_range(self,m,n):
         if (n>=self.n) or (m>=self.m):
             raise IndexError
