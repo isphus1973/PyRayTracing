@@ -66,8 +66,31 @@ class matrix:
 
     __rmul__ = __mul__
 
+    def transpose(self):
+        transposed_matrix_list = transpose(self).matrix_list
+        self.__init__(transposed_matrix_list)
+
+    def __str__(self):
+        lines = ['|' + ' '.join([str(x) for x in line]) + '|' for line in self.matrix_list]
+        return '\n'.join(lines)
+
+    __repr__ = __str__
 
 
+def transpose(mt):
+    '''
+    Transpose a matrix
+
+    input a matrix and return a matrix
+    '''
+    if not isinstance(mt,matrix):
+        raise TypeError('Expecting a matrix type input')
+
+    matrix_input_list = mt.matrix_list
+
+    matrix_output_list = [[matrix_input_list[n][m] for n in range(mt.n)] for m in range(mt.m)]
+
+    return matrix(matrix_output_list)
 
 class rtTuple():
     '''
@@ -80,6 +103,11 @@ class rtTuple():
         self.y = y
         self.z = z
         self.w = w
+
+    def __str__(self):
+        return [self.x,self.y,self.z,self.w].__str__()
+
+    __repr__ = __str__
 
     def is_point(self):
         return self.w == 1
@@ -111,7 +139,7 @@ class rtTuple():
         if isinstance(other, float) or isinstance(other, int):
             return rtTuple(other * self.x, other * self.y, other * self.z, self.w)
         elif isinstance(other, rtTuple):
-            return other.x * self.x + other.y * self.y + other.z * self.z
+            return other.x * self.x + other.y * self.y + other.z * self.z + other.w * self.w
         else:
             raise NotImplementedError
 
@@ -175,3 +203,12 @@ class color(rtTuple):
             return self.from_tuple(**mult_tuple)
 
     __rmul__ = __mul__
+
+def identity_matrix_func(dim):
+    identity_matrix_list = [[1 if x == y else 0 for x in range(dim)] for y in range(dim)]
+    return matrix(identity_matrix_list)
+
+identity_matrix = identity_matrix_func(4) 
+
+
+

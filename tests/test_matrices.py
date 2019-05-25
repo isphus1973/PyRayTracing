@@ -3,7 +3,7 @@ This file test the matrix class
 '''
 
 import unittest
-from raytrace.util import matrix, rtTuple
+from raytrace.util import matrix, rtTuple, identity_matrix, transpose
 
 class testMatrix(unittest.TestCase):
     'This tests the matrix class'
@@ -109,4 +109,47 @@ class testMatrix(unittest.TestCase):
 
         self.assertEqual(Mt * tuple_input, tuple_output, 'this should be a tuple')
 
+    def test_identity_matrix(self):
 
+        matrix_list = [
+            [0,1,2,4],
+            [1,2,4,8],
+            [2,4,8,16],
+            [4,8,16,32]
+        ]
+
+        Mt = matrix(matrix_list)
+
+        self.assertEqual(identity_matrix * Mt, Mt, 'The identity should not alter the Matrix')
+
+        tuple_list = [1,2,3,4]
+
+        Tt = rtTuple(*tuple_list)
+
+        self.assertEqual(identity_matrix * Tt, Tt, 'The identity should not alter the tuple')
+
+    def test_transpose_matrix(self):
+
+        matrix_list = [
+            [0,9,3,0],
+            [9,8,0,8],
+            [1,8,5,3],
+            [0,0,5,8]
+        ]
+
+        matrix_transposed_list = [
+            [0,9,1,0],
+            [9,8,8,0],
+            [3,0,5,5],
+            [0,8,3,8]
+        ]
+
+        Mt = matrix(matrix_list)
+        Mt_transposed = matrix(matrix_transposed_list)
+
+        self.assertEqual(transpose(Mt),Mt_transposed,'The matrix transposed is failing')
+        Mt.transpose()
+        self.assertEqual(Mt,Mt_transposed,'The matrix transposed inplace method is failing')
+        
+        self.assertEqual(transpose(identity_matrix),identity_matrix\
+            , 'The transposition of the identity should be the identity')
