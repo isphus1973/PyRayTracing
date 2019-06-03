@@ -3,7 +3,7 @@ This file test the matrix class
 '''
 
 import unittest
-from raytrace.util import matrix, rtTuple, identity_matrix, transpose
+from raytrace.util import matrix, rtTuple, identity_matrix, transpose, det, submatrix, minor, cofactor, inverse
 
 class testMatrix(unittest.TestCase):
     'This tests the matrix class'
@@ -153,3 +153,251 @@ class testMatrix(unittest.TestCase):
         
         self.assertEqual(transpose(identity_matrix),identity_matrix\
             , 'The transposition of the identity should be the identity')
+
+class testMatrixOperations(unittest.TestCase):
+    '''
+    Test operations that acts over matrices such as transformations and determinant
+    '''
+
+    def test_determinant_2x2(self):
+
+        matrix_list = [
+                [1,5],
+                [-3,2]
+                ]
+
+        Mt = matrix(matrix_list)
+
+        self.assertEqual( det(Mt), 17, 'The determinant should be 17')
+
+    def test_submatrix_3x3(self):
+
+        matrix_list = [
+                [1,5,0],
+                [-3,2,7],
+                [0,6,-3]
+                ]
+
+        matrix_list_output = [
+                [-3,2],
+                [0,6]
+                ]
+
+        Mt = matrix(matrix_list)
+        Mt_output = matrix(matrix_list_output)
+
+        self.assertEqual( submatrix(Mt,0,2), Mt_output, 'The submatrix of a 3x3 matrix failed')
+
+    def test_submatrix_4x4(self):
+
+        matrix_list_input = [
+                [-6,1,1,6],
+                [-8,5,8,6],
+                [-1,0,8,2],
+                [-7,1,-1,1]
+            ]
+
+        matrix_list_output = [
+                [-6,1,6],
+                [-8,8,6],
+                [-7,-1,1]
+            ]
+
+        Mt = matrix(matrix_list_input)
+        Mt_output = matrix(matrix_list_output)
+
+        self.assertEqual( submatrix(Mt, 2, 1), Mt_output, 'The submatrix of a 4x4 matrix failed')
+
+    
+    def test_minor(self):
+
+        matrix_list = [
+                [3,5,0],
+                [2,-1,-7],
+                [6,-1,5]
+            ]
+
+        Mt = matrix(matrix_list)
+        Mt_submatrix = submatrix(Mt, 1, 0)
+
+        self.assertEqual( det(Mt_submatrix), 25, 'The 3x3 submatrix determinant failed')
+        self.assertEqual( minor(Mt, 1, 0), 25, 'The minor of 3x3 matrix failed')
+
+    def test_cofactor(self):
+
+        matrix_list = [
+                [3,5,0],
+                [2,-1,-7],
+                [6,-1,5]
+            ]
+
+        Mt = matrix(matrix_list)
+
+        self.assertEqual( minor(Mt, 0, 0), -12, 'The matrix minor failed')
+        self.assertEqual( cofactor(Mt, 0, 0), -12, 'The matrix cofactor failed')
+        self.assertEqual( minor(Mt, 1,0), 25, 'The matrix minow failed')
+        self.assertEqual( cofactor(Mt, 1, 0), -25, 'The matrix cofactor failed')
+
+    def test_determinant_3x3(self):
+
+        matrix_list = [
+                [1,2,6],
+                [-5,8,-4],
+                [2,6,4]
+            ]
+
+        Mt = matrix(matrix_list)
+
+        self.assertEqual( cofactor(Mt,0,0), 56, 'The cofactor of 3x3 matrix failed')
+        self.assertEqual( cofactor(Mt,0,1), 12, 'The cofactor of 3x3 matrix failed')
+        self.assertEqual( cofactor(Mt,0,2), -46, 'The cofactor of 3x3 matrix failed')
+
+        self.assertEqual( det(Mt), -196, 'The determinant of 3x3 matrix failed')
+
+    def test_determinant_4x4(self):
+
+        matrix_list = [
+                [-2,-8,3,5],
+                [-3,1,7,3],
+                [1,2,-9,6],
+                [-6,7,7,-9]
+            ]
+
+        Mt = matrix(matrix_list)
+
+        self.assertEqual( cofactor(Mt,0,0), 690, 'The cofactor of 4x4 failed')
+        self.assertEqual( cofactor(Mt,0,2), 210, 'The cofactor of 4x4 failed')
+        self.assertEqual( cofactor(Mt,0,3), 51, 'The cofactor of 4x4 failed')
+        self.assertEqual( cofactor(Mt,0,1), 447, 'The cofactor of 4x4 failed')
+
+        self.assertEqual( det(Mt), -4071, 'The determinant of 4x4 matrix failed')
+
+class testMatrixInversion(unittest.TestCase):
+
+    def test_invertible_4x4(self):
+
+        matrix_list = [
+                [6,4,4,4],
+                [5,5,7,6],
+                [4,-9,3,-7],
+                [9,1,7,-6]
+            ]
+
+        Mt = matrix(matrix_list)
+
+        self.assertEqual( det(Mt), -2120, 'The 4x4 matrix determinant failed')
+        self.assertTrue( Mt.is_inv(), 'The matrix should be invertible')
+
+    def test_not_invertible_4x4(self):
+
+        matrix_list = [
+                [-4,2,-2,-3],
+                [9,6,2,6],
+                [0,-5,1,-5],
+                [0,0,0,0]
+            ]
+
+        Mt = matrix(matrix_list)
+
+        self.assertEqual( det(Mt), 0, 'The 4x4 matrix null determinant failed')
+        self.assertFalse( Mt.is_inv(), 'The matrix should not be invertible')
+
+    def test_inversion(self):
+
+        matrix_list = [
+                [-5,2,6,-8],
+                [1,-5,1,8],
+                [7,7,-6,-7],
+                [1,-3,7,4]
+            ]
+
+
+        matrix_list_inverse = [
+                [0.21805, 0.45113, 0.24060, -0.04511],
+                [-0.80827, -1.45677, -0.44361, 0.52068],
+                [-0.07895, -0.22368, -0.05263, 0.19737],
+                [-0.52256, -0.81391, -0.30075, 0.30639]
+            ]
+    
+        Mt = matrix(matrix_list)
+        Mt_inverse = inverse(Mt)
+        Mt_inverse_output = matrix(matrix_list_inverse)
+
+        self.assertEqual( det(Mt), 532, 'The determinant of 4x4 matrix failed')
+        
+        self.assertEqual( cofactor(Mt, 2, 3), -160, 'The cofactor of 4x4 matrix failed')
+        self.assertEqual( Mt_inverse[3,2], -160/532, 'The inverse element failed')
+
+        self.assertEqual( cofactor(Mt, 3, 2), 105, 'The cofactor of 4x4 matrix failed')
+        self.assertEqual( Mt_inverse[2,3], 105/532, 'The inverse element failed')
+        
+        self.assertEqual( Mt_inverse, Mt_inverse_output, 'The 4x4 inverse failed')
+
+    def test_inversion2(self):
+
+        matrix_list1 = [
+                [ 8, -5,  9,  2 ],
+                [ 7,  5,  6,  1 ],
+                [-6,  0,  9,  6 ],
+                [-3,  0, -9, -4 ]
+            ]
+
+        matrix_list1_inv = [
+                [-0.15385, -0.15385, -0.28205, -0.53846 ],
+                [-0.07692,  0.12308,  0.02564,  0.03077 ],
+                [ 0.35897,  0.35897,  0.43590,  0.92308 ],
+                [-0.69231, -0.69231, -0.76923, -1.92308 ]
+            ]
+
+        Mt1 = matrix(matrix_list1)
+        Mt_inverse1 = inverse(Mt1)
+        Mt_inverse1_output = matrix(matrix_list1_inv)
+
+        self.assertEqual( Mt_inverse1, Mt_inverse1_output, 'The inverse of 4x4 matrix failed')
+
+    def test_inversion3(self):
+
+        matrix_list = [
+                [ 9,  3,  0,  9 ],
+                [-5, -2, -6, -3 ],
+                [-4,  9,  6,  4 ],
+                [-7,  6,  6,  2 ]
+            ]
+
+        matrix_list_inv = [
+                [-0.04074, -0.07778,  0.14444, -0.22222 ],
+                [-0.07778,  0.03333,  0.36667, -0.33333 ],
+                [-0.02901, -0.14630, -0.10926,  0.12963 ],
+                [ 0.17778,  0.06667, -0.26667,  0.33333 ]
+            ]
+
+        Mt = matrix(matrix_list)
+        Mt_inverse = inverse(Mt)
+        Mt_inverse_output = matrix(matrix_list_inv)
+
+        self.assertEqual( Mt_inverse, Mt_inverse_output, 'The inverse of 4x4 matrix failed')
+
+    def test_inverse_multiplication(self):
+
+        matrix_list_A = [
+                [ 3,-9, 7, 3 ],
+                [ 3,-8, 2,-9 ],
+                [-4, 4, 4, 1 ],
+                [-6, 5,-1, 1 ]
+            ]
+
+        matrix_list_B = [
+                [ 8, 2, 2, 2 ],
+                [ 3,-1, 7, 0 ],
+                [ 7, 0, 5, 4 ],
+                [ 6,-2, 0, 5 ]
+            ]
+
+        MtA = matrix(matrix_list_A)
+        MtB = matrix(matrix_list_B)
+
+        MtC = MtA * MtB
+
+        self.assertEqual( MtC * inverse(MtB), MtA, 'Inverse multiplication failed')
+
+        self.assertEqual

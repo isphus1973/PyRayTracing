@@ -16,7 +16,9 @@ class testTuple(unittest.TestCase):
     def test_tuple_point(self):
 
         ap = rtTuple(4.3, -4.2, 3.1, 1)
+        ap2 = rtTuple(4.3, -4.2, 3.1, -1)
 
+        self.assertNotEqual( ap, ap2, 'These tuples should not be equal')
         self.assertEqual(ap.x, 4.3, 'x should be 4.3')
         self.assertEqual(ap.y, -4.2, 'y should be -4.2')
         self.assertEqual(ap.z, 3.1, 'z should be 3.1')
