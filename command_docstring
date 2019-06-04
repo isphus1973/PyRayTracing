@@ -1,0 +1,16 @@
+The docscring should be something like
+
+"""
+    Summary line.
+
+    function(args)
+
+    Extended description of function.
+
+    Parameters:
+    -arg1 (int): Description of arg1
+
+    Returns:
+    -int: Description of return value
+
+    """

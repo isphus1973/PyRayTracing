@@ -3,7 +3,6 @@ This is the test for the canvas class
 '''
 
 import unittest
-import numpy as np
 from raytrace.canvas import canvas
 from raytrace.util import color
 
