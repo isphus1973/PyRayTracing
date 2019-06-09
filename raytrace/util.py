@@ -1,5 +1,5 @@
 '''
-This is a python util library for Ray Tracing written by Arthur Scardua
+This is a python util library for Ray Tracing written by Arthur Scardua.
 '''
 import math
 from copy import deepcopy
@@ -359,3 +359,48 @@ def identity_matrix_func(dim):
     return matrix(identity_matrix_list)
 
 identity_matrix = identity_matrix_func(4) 
+
+def normal_at(s_var, world_point):
+    """
+    Normal vector of an sphere
+
+    normal_at(s_var, world_point)
+
+    Normal vector of an sphere given the world_poind and the sphere s_var
+
+    Parameters
+    ----------
+    -s_var (sphere): the spere object.
+    -world_poind (point): the position in world space.
+
+    Return
+    ------
+    -vector: the normal vector.
+    """
+
+    object_point = inverse(s_var.transform) * world_point
+    object_normal = object_point - point(0,0,0)
+
+    world_normal = transpose(inverse(s_var.transform)) * \
+            object_normal
+    world_normal.w = 0
+
+    return normalize(world_normal)
+
+def reflect(inc, normal):
+    '''
+    Reflects an incoming ray with a normal vector
+
+    reflect(inc, normal)
+    
+    Reflects the vector inc in respect to the normal vector
+
+    Parameters:
+    -inc (vector): the incoming ray.
+    -normal (vector): the vector normal to the surface.
+        
+    Return:
+    -vector: the reflected vector.
+    '''
+
+    return inc - 2 * dot(inc, normal) * normal

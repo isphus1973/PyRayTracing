@@ -2,10 +2,11 @@
 This create the objects classes
 '''
 
-from raytrace.util import dot, point, identity_matrix, inverse
 from math import sqrt
+from raytrace.util import dot, point, identity_matrix, inverse
 from raytrace.transformation import scaling, translation
 from raytrace.ray import transform
+from raytrace.light import Material
 
 class intersection:
     '''
@@ -209,3 +210,4 @@ class sphere(scene_obj):
         self.center = center
         self.r = r
         self.transform = scaling(r,r,r) * translation(*center) 
+        self.material = Material()
