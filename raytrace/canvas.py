@@ -1,5 +1,5 @@
 '''
-This is a python canvas library for Ray Tracing written by Arthur Scardua
+This is a python canvas library for Ray Tracing written by Arthur Scardua.
 '''
 
 from raytrace.util import color
