@@ -7,6 +7,7 @@ from raytrace.ray import ray
 from raytrace.canvas import canvas
 from raytrace.objects import sphere, intersect, hit
 from raytrace.transformation import translation, scaling
+from raytrace.light import Material, PointLight
 
 CANVAS_DISTANCE = 100
 CANVAS_H = 1000
@@ -26,7 +27,13 @@ print('blank canvas wrote')
 pad_x = - CANVAS_W /2
 pad_y = - CANVAS_H /2
 
+light_position = point(-10, 10, -10)
+light_color = color(1, 1, 1)
+light = PointLight(light_position, light_color)
+
 s = sphere()
+s.material = Material()
+s.material.color = color(1, 0.2, 1)
 trans = scaling(200,200,1) * translation(0, 0, 800)
 s.set_transform(trans)
 

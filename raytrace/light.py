@@ -1,7 +1,9 @@
 """
 The point light source library
 """
-from raytrace.util import color
+from raytrace.util import color, normalize, dot, reflect
+
+BLACK = color(0, 0, 0)
 
 class PointLight:
     """
@@ -68,3 +70,50 @@ class Material:
                 (self.specular == other.specular) and\
                 (self.shininess == other.shininess)
         return equality
+
+def lighting(material, light, point, eyev, normalv):
+    """
+    Create the lighting of and ray.
+
+    lighting(material, light, point, eyev, normalv)
+
+    Creates the lighting of the ray.
+
+    Parameters
+    ----------
+    -material (Material): the material of the object.
+    -light (PointLight): source of light.
+    -point (point): point to be iluminated.
+    -eyev (vector): eye vector direction.
+    -normalv (vector): normal vector of the object.
+
+    Result
+    ------
+    -color: the output color.
+    """
+
+    effective_color = material.color * light.intensity
+
+    lightv = normalize(light.position - point)
+
+    ambient = effective_color * material.ambient
+
+    light_dot_normal = dot(lightv, normalv)
+    if light_dot_normal < 0:
+
+        diffusse = BLACK
+        specular = BLACK
+
+    else:
+        diffusse = effective_color * material.diffusse *\
+                light_dot_normal
+
+        reflectv = reflect(-lightv, normalv)
+        reflect_dot_eye = dot(reflectv, eyev)
+        if reflect_dot_eye <= 0:
+            specular = BLACK
+        else:
+            factor = pow(reflect_dot_eye, material.shininess)
+            specular = light.intensity * material.specular\
+                    * factor
+    return ambient + diffusse + specular
